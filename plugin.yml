@@ -1,0 +1,23 @@
+name: MagicSystem
+main: dev.solem.magicsystem.MagicSystem
+version: 0.0.1
+api-version: '1.21'
+author: solem.dev
+load: STARTUP
+depend: []
+softdepend: []
+
+commands:
+  cast:
+    description: Cast a spell
+    usage: /<command> <spell>
+    permission: magicsystem.command
+  playpa:
+    description: Play a particle animation
+    usage: /<command> <particle animation>
+    permission: magicsystem.command
+
+permissions:
+  magicsystem.command:
+    default: op
+    description: Allows player to use the /cast command
