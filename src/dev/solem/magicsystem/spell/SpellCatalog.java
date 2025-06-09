@@ -8,15 +8,25 @@ public class SpellCatalog {
 	
 	// note to self:
 	// to make the spell catalog command-friendly,
-	// DNOT
+	// DO NOT USE SPACES
 	public SpellCatalog() {
+		
+		// Destruction
 		spellHashMap.put("Fireball", new SpellFireball());
-		spellHashMap.put("Teleport", new Teleport());
 		spellHashMap.put("Flames",  new Flames());
 		spellHashMap.put("Firebolt",  new Firebolt());
 		spellHashMap.put("LightningBolt", new LightningBolt());
+		spellHashMap.put("Thunderbolt", new Thunderbolt());
+		
+		// Restoration
 		spellHashMap.put("LesserWard", new LesserWard());
+		
+		// Alteration
 		spellHashMap.put("Oakflesh", new Oakflesh());
+		spellHashMap.put("Teleport", new Teleport());
+		spellHashMap.put("IcarianFlight", new IcarianFlight());
+		spellHashMap.put("Levitation", new Levitation());
+		spellHashMap.put("Madness", new Madness());
 	}
 	public Spell getSpell(String name) {
 		if (!spellHashMap.containsKey(name)) {

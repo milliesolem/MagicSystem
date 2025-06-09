@@ -27,7 +27,7 @@ public class LesserWard extends Spell {
 	public void cast(Player player) {
 		Location location = player.getEyeLocation();
 		this.getParticleAnimation().playAnimation(location, location.getDirection());
-		player.playSound(player.getLocation(), Sound.ITEM_FIRECHARGE_USE, 20, 0.1f);
+		player.playSound(player.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 5, -10f);
 		
 		// give resitence
 		player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 40, 1));
@@ -42,6 +42,7 @@ public class LesserWard extends Spell {
 			if(entity.isOnGround()) {
 				continue;
 			}
+			player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 20, 0.1f);
 			entity.setVelocity(entity.getVelocity().multiply(-1.5));
 		}
 	}

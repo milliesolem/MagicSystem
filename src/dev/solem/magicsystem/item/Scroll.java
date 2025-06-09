@@ -28,7 +28,7 @@ public class Scroll implements Listener {
 		isMeta.setDisplayName("§eScroll: " + this.spell.getName());
 		isMeta.setLore(lore);
 		isMeta.setEnchantmentGlintOverride(true);
-		isMeta.setMaxStackSize(1);
+		isMeta.setMaxStackSize(16);
 		itemStack.setItemMeta(isMeta);
 		return itemStack;
 	}

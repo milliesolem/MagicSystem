@@ -1,6 +1,7 @@
 package dev.solem.magicsystem;
 
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -9,6 +10,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Bukkit;
@@ -19,6 +21,7 @@ import dev.solem.magicsystem.spell.SpellCatalog;
 import dev.solem.magicsystem.spell.SpellType;
 import dev.solem.magicsystem.item.Scroll;
 import dev.solem.magicsystem.item.SpellTome;
+import dev.solem.magicsystem.item.Staff;
 
 public class MagicSystem extends JavaPlugin implements Listener {
 	
@@ -61,6 +64,14 @@ public class MagicSystem extends JavaPlugin implements Listener {
 			recipeScroll.setIngredient('B', Material.PAPER);
 			recipeScroll.setIngredient('A', Material.AMETHYST_SHARD);
 			getServer().addRecipe(recipeScroll);
+			
+			ItemStack staff = new Staff(spell).getItemStack();
+			ShapedRecipe recipeStaff = new ShapedRecipe(staff);
+			recipeStaff.shape("CAC","ABA","CAC");
+			recipeStaff.setIngredient('C', spell.getCraftingComponent());
+			recipeStaff.setIngredient('B', Material.DIAMOND_HOE);
+			recipeStaff.setIngredient('A', Material.AMETHYST_SHARD);
+			getServer().addRecipe(recipeStaff);
 		}
 		
 	}
@@ -68,7 +79,8 @@ public class MagicSystem extends JavaPlugin implements Listener {
 	@EventHandler(priority=EventPriority.HIGH)
 	private void onRightClick(PlayerInteractEvent event) {
 	    Player player = event.getPlayer();
-	    ItemMeta itemInHandMeta = player.getInventory().getItemInMainHand().getItemMeta();
+	    ItemStack itemInMH = player.getInventory().getItemInMainHand();
+	    ItemMeta itemInHandMeta = itemInMH.getItemMeta();
 	    if (itemInHandMeta == null) {
 	    	return;
 	    }
@@ -84,6 +96,30 @@ public class MagicSystem extends JavaPlugin implements Listener {
 		    	// creative mode don't consume scrolls
 		    	if(player.getGameMode() != GameMode.CREATIVE) {
 		    		player.getInventory().removeItem(player.getInventory().getItemInMainHand());
+		    	}
+		    }
+		    else if(itemName.startsWith("§eStaff of")) {
+		    	Spell spellToCast = spellCatalog.getSpell(itemName.substring(10).replaceAll("\s", ""));
+		    	spellToCast.cast(event);
+		    	if (spellToCast.getSpellType() == SpellType.CONCENTRATION) {
+		    		return;
+		    	}
+		    	// creative mode don't consume staff durability
+		    	if(player.getGameMode() != GameMode.CREATIVE) {
+		    		if (itemInHandMeta instanceof Damageable) {
+		    			Damageable metaDmg = ((Damageable) itemInHandMeta);
+		    			if(!metaDmg.hasMaxDamage()) {
+		    				return;
+		    			}
+		    			metaDmg.setDamage(metaDmg.getDamage() + spellToCast.getManaCost());
+		    			// break staff when durability is used
+		    			if(metaDmg.getMaxDamage() <= metaDmg.getDamage()) {
+		    				player.getInventory().removeItem(itemInMH);
+		    				player.playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 1, 1);
+		    			}
+		    			itemInMH.setItemMeta(metaDmg);
+		    			return;
+		    		}
 		    	}
 		    }
 	    }

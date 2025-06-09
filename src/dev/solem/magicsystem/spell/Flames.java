@@ -16,7 +16,7 @@ public class Flames extends Spell {
 		this.setSchool(School.DESTRUCTION);
 		this.setSpellType(SpellType.CONCENTRATION);
 		this.setName("Flames");
-		this.setDescription("Shoots a blast of fire that ignites anything 10 meters in front of you.");
+		this.setDescription("Shoots a blast of fire that ignites target. Targets on fire take extra damage.");
 		this.setManaCost(5);
 		this.setCraftingComponent(Material.COAL);
 		this.setParticleAnimation(new Flamethrower());
@@ -35,7 +35,11 @@ public class Flames extends Spell {
 				if(entity.getEntityId() == player.getEntityId()) {
 					continue;
 				}
-				((LivingEntity) entity).setFireTicks(10 * 20); // how many 20th of seconds the entity is on fire
+				LivingEntity lentity = ((LivingEntity) entity);
+				if(lentity.getFireTicks() > 20) {
+					lentity.damage(2);
+				}
+				lentity.setFireTicks(10 * 20); // how many 20th of seconds the entity is on fire
 			}
 			catch(ClassCastException e) {
 				
