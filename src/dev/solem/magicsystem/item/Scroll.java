@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 
 import dev.solem.magicsystem.spell.Spell;
 
@@ -19,16 +20,19 @@ public class Scroll implements Listener {
 		ItemStack itemStack = new ItemStack(Material.PAPER);
 		ItemMeta isMeta = itemStack.getItemMeta();
 		List<String> lore = Arrays.asList(
-				"",
-				"§7"+this.spell.getDescription(), // description
-				"§7School: "+this.spell.getSchoolAsString(),
-				"§9"+this.spell.getManaCost()+" mana" // mana cost
-				);
+			"",
+			"§7"+this.spell.getDescription(), // description
+			"§7School: "+this.spell.getSchoolAsString(),
+			"§9"+this.spell.getManaCost()+" mana" // mana cost
+		);
+		
+		//CustomModelDataComponent scrollModel = new CustomModelDataComponent();
 		
 		isMeta.setDisplayName("§eScroll: " + this.spell.getName());
 		isMeta.setLore(lore);
 		isMeta.setEnchantmentGlintOverride(true);
 		isMeta.setMaxStackSize(16);
+		//isMeta.setCustomModelDataComponent(null);
 		itemStack.setItemMeta(isMeta);
 		return itemStack;
 	}

@@ -38,10 +38,10 @@ public class LightningRay extends ParticleAnimation {
 		Vector subdirection = direction.clone().normalize().multiply(2.0);
 		int samples = 20;
 		for(int i=0; i<20; i++) {
-			double k1 = Math.random();
-			double k2 = Math.random();
-			double k3 = Math.random();
-			Vector rdir = new Vector(k1,k2,k3).normalize().multiply(2.0);
+			double k1 = Math.random()-0.5;
+			double k2 = Math.random()-0.5;
+			double k3 = Math.random()-0.5;
+			Vector rdir = new Vector(k1,k2,k3).normalize().multiply(4.0);
 			Vector rdirinv = subdirection.clone().subtract(rdir);
 			drawParticleLine(sublocation, rdir, 1, samples/2);
 			drawParticleLine(sublocation.clone().add(rdir), rdirinv, rdirinv.length(), samples/2);

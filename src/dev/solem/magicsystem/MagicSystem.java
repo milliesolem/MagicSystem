@@ -2,17 +2,29 @@ package dev.solem.magicsystem;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+//import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Set;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 
@@ -25,7 +37,9 @@ import dev.solem.magicsystem.item.Staff;
 
 public class MagicSystem extends JavaPlugin implements Listener {
 	
+	private static MagicSystem instance;
 	private SpellCatalog spellCatalog = new SpellCatalog();
+	private HashMap<Player, Collection<LivingEntity>> conjuredMinions = new HashMap<Player, Collection<LivingEntity>>();
 	
 	@Override
 	public void onLoad() {
@@ -35,6 +49,7 @@ public class MagicSystem extends JavaPlugin implements Listener {
 	
 	@Override
 	public void onEnable() {
+		instance = this;
 		this.getCommand("cast").setExecutor(new CommandCast()); // command to cast spells
 		this.getCommand("playpa").setExecutor(new CommandPlayParticleAnimation()); // debugging command for particle animations
 		Bukkit.getPluginManager().registerEvents(this, this);
@@ -43,6 +58,17 @@ public class MagicSystem extends JavaPlugin implements Listener {
 	@Override
 	public void onDisable() {
 		
+		// purge conjured minions
+		Set<Player> playersWithConjuredMinions  = conjuredMinions.keySet();
+		for(Player player:playersWithConjuredMinions) {
+			Collection<LivingEntity> minions = conjuredMinions.get(player);
+			for(LivingEntity minion:minions) {
+				minion.remove();
+			}
+		}
+	}
+	public static MagicSystem getInstance() {
+		return instance;
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -95,15 +121,13 @@ public class MagicSystem extends JavaPlugin implements Listener {
 		    	}
 		    	// creative mode don't consume scrolls
 		    	if(player.getGameMode() != GameMode.CREATIVE) {
-		    		player.getInventory().removeItem(player.getInventory().getItemInMainHand());
+		    		itemInMH.setAmount(itemInMH.getAmount() - 1);
+		    		//player.getInventory().removeItem(player.getInventory().getItemInMainHand());
 		    	}
 		    }
 		    else if(itemName.startsWith("§eStaff of")) {
 		    	Spell spellToCast = spellCatalog.getSpell(itemName.substring(10).replaceAll("\s", ""));
 		    	spellToCast.cast(event);
-		    	if (spellToCast.getSpellType() == SpellType.CONCENTRATION) {
-		    		return;
-		    	}
 		    	// creative mode don't consume staff durability
 		    	if(player.getGameMode() != GameMode.CREATIVE) {
 		    		if (itemInHandMeta instanceof Damageable) {
@@ -125,4 +149,44 @@ public class MagicSystem extends JavaPlugin implements Listener {
 	    }
 	}
 	
+	public void addMinion(Player player, LivingEntity minion) {
+		Collection<LivingEntity> minions = this.conjuredMinions.get(player);
+		if(minions == null) {
+			this.conjuredMinions.put(player, new ArrayList<LivingEntity>());
+		}
+		this.conjuredMinions.get(player).add(minion);
+	}
+	
+	// Conjured minions
+    @EventHandler
+    public void onEntityTarget(EntityTargetLivingEntityEvent  event){
+        if (event.getTarget() instanceof Player){
+        	Player player = (Player)event.getTarget();
+        	Entity targetingEntity = event.getEntity();
+        	String customName = targetingEntity.getCustomName();
+            if (customName != null && customName.startsWith(player.getDisplayName())){
+            	event.setTarget(null);
+                event.setCancelled(true);
+                return;
+            }
+            else if(conjuredMinions.get(player) != null){
+            	for(LivingEntity minion:conjuredMinions.get(player)) {
+            		Mob minionMob = (Mob) minion;
+            		minionMob.setTarget((LivingEntity) targetingEntity);
+            	}
+            }
+        }
+    }
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        // wipe minions
+        if(conjuredMinions.get(player) != null){
+        	Collection<LivingEntity> minions = conjuredMinions.get(player);
+			for(LivingEntity minion:minions) {
+				minion.remove();
+			}
+        }
+        conjuredMinions.put(player, null);
+    }
 }

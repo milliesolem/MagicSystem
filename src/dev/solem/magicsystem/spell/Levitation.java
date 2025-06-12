@@ -26,8 +26,14 @@ public class Levitation extends Spell {
 		this.getParticleAnimation().playAnimation(location, location.getDirection());
 		player.playSound(player.getLocation(), Sound.ENTITY_BREEZE_WIND_BURST, 20, 10);
 		
-		// give resitence
+		// give slow falling
 		player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 20 * 2, 1));
-		player.setVelocity(player.getVelocity().multiply(3).add(new Vector(0,0.5,0)));
+		Vector newPlayerVelocity = player.getVelocity().multiply(3).add(new Vector(0,0.5,0));
+		// prevent the player from going insanely fast
+		double speedLimit = 1;
+		if(newPlayerVelocity.length() > speedLimit) {
+			newPlayerVelocity = newPlayerVelocity.normalize().multiply(speedLimit);
+		}
+		player.setVelocity(newPlayerVelocity);
 	}
 }

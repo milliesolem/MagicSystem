@@ -27,6 +27,10 @@ public class SpellCatalog {
 		spellHashMap.put("IcarianFlight", new IcarianFlight());
 		spellHashMap.put("Levitation", new Levitation());
 		spellHashMap.put("Madness", new Madness());
+		spellHashMap.put("Polymorph", new Polymorph());
+		
+		// Conjuration
+		spellHashMap.put("SummonBlaze", new SummonBlaze());
 	}
 	public Spell getSpell(String name) {
 		if (!spellHashMap.containsKey(name)) {

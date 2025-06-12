@@ -33,11 +33,8 @@ public class LightningBolt extends Spell {
 			if(player.getEntityId() == entity.getEntityId()) {
 				continue;
 			}
-			try {
+			if(entity instanceof LivingEntity) {
 				((LivingEntity) entity).damage(8);
-			}
-			catch(ClassCastException e) {
-				
 			}
 			entity.setVelocity(location.getDirection().normalize().multiply(3.0));
 		}
