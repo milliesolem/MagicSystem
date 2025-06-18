@@ -13,15 +13,23 @@ import org.bukkit.potion.PotionEffectType;
 
 import dev.solem.magicsystem.particleanim.Ward;
 
-public class LesserWard extends Spell {
-	public LesserWard() {
+public class SpellWard extends Spell {
+	
+	private int power;
+	
+	public SpellWard() {
 		this.setSchool(School.RESTORATION);
 		this.setSpellType(SpellType.CONCENTRATION);
-		this.setName("Lesser Ward");
 		this.setDescription("Forms an arcane shield in front of the caster that deflects incoming projectiles.");
-		this.setManaCost(5);
-		this.setCraftingComponent(Material.SHIELD);
 		this.setParticleAnimation(new Ward());
+	}
+	
+	public SpellWard(String name, int manaCost, Material craftingComponent, int power) {
+		this();
+		this.power = power;
+		this.setName(name);
+		this.setManaCost(manaCost);
+		this.setCraftingComponent(craftingComponent);
 	}
 	
 	public void cast(Player player) {
@@ -29,8 +37,8 @@ public class LesserWard extends Spell {
 		this.getParticleAnimation().playAnimation(location, location.getDirection());
 		player.playSound(player.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 5, -10f);
 		
-		// give resitence
-		player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 40, 1));
+		// give resistence
+		player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 40, power));
 		
 		// deflect entites
 		Location targetLocation = player.getTargetBlock((Set<Material>) null, 2).getLocation();
@@ -43,7 +51,7 @@ public class LesserWard extends Spell {
 				continue;
 			}
 			player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 20, 0.1f);
-			entity.setVelocity(entity.getVelocity().multiply(-1.5));
+			entity.setVelocity(entity.getVelocity().multiply(-((float)this.power/2.0f)));
 		}
 	}
 }

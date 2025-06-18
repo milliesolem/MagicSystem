@@ -20,6 +20,9 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -171,6 +174,10 @@ public class MagicSystem extends JavaPlugin implements Listener {
             }
             else if(conjuredMinions.get(player) != null){
             	for(LivingEntity minion:conjuredMinions.get(player)) {
+            		if (minion == null) {
+            			conjuredMinions.get(player).remove(null);
+            			continue;
+            		}
             		Mob minionMob = (Mob) minion;
             		minionMob.setTarget((LivingEntity) targetingEntity);
             	}

@@ -7,8 +7,6 @@ import org.bukkit.Material;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.components.CustomModelDataComponent;
-
 import dev.solem.magicsystem.spell.Spell;
 
 public class Scroll implements Listener {
