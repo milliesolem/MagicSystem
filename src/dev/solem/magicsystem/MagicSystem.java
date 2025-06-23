@@ -1,6 +1,7 @@
 package dev.solem.magicsystem;
 
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -78,12 +79,12 @@ public class MagicSystem extends JavaPlugin implements Listener {
 		return instance;
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void loadRecipes() {
 		
 		for(Spell spell:spellCatalog.getSpellCollection()) {
 			ItemStack spellTome = new SpellTome(spell).getItemStack();
-			ShapedRecipe recipeSpellTome = new ShapedRecipe(spellTome);
+			NamespacedKey keySpellTome = new NamespacedKey(this, "spell_tome_"+spell.getName().toLowerCase().replace(' ', '_'));
+			ShapedRecipe recipeSpellTome = new ShapedRecipe(keySpellTome, spellTome);
 			recipeSpellTome.shape("CAC","ABA","CAC");
 			recipeSpellTome.setIngredient('C', spell.getCraftingComponent());
 			recipeSpellTome.setIngredient('B', Material.BOOK);
@@ -91,7 +92,8 @@ public class MagicSystem extends JavaPlugin implements Listener {
 			getServer().addRecipe(recipeSpellTome);
 			
 			ItemStack scroll = new Scroll(spell).getItemStack();
-			ShapedRecipe recipeScroll = new ShapedRecipe(scroll);
+			NamespacedKey keyScroll = new NamespacedKey(this, "scroll_"+spell.getName().toLowerCase().replace(' ', '_'));
+			ShapedRecipe recipeScroll = new ShapedRecipe(keyScroll,scroll);
 			recipeScroll.shape("CAC","ABA","CAC");
 			recipeScroll.setIngredient('C', spell.getCraftingComponent());
 			recipeScroll.setIngredient('B', Material.PAPER);
@@ -99,7 +101,8 @@ public class MagicSystem extends JavaPlugin implements Listener {
 			getServer().addRecipe(recipeScroll);
 			
 			ItemStack staff = new Staff(spell).getItemStack();
-			ShapedRecipe recipeStaff = new ShapedRecipe(staff);
+			NamespacedKey keyStaff = new NamespacedKey(this, "staff_"+spell.getName().toLowerCase().replace(' ', '_'));
+			ShapedRecipe recipeStaff = new ShapedRecipe(keyStaff, staff);
 			recipeStaff.shape("CAC","ABA","CAC");
 			recipeStaff.setIngredient('C', spell.getCraftingComponent());
 			recipeStaff.setIngredient('B', Material.DIAMOND_HOE);
