@@ -29,7 +29,7 @@ public class LightningRay extends ParticleAnimation {
 	}
 	public void drawParticleLine(Location a, Vector dir, double len, int n) {
 		Particle.DustOptions dust = new Particle.DustOptions(
-                Color.fromRGB(32, 0, 255), 1);
+                Color.fromRGB(86, 63, 226), 1);
 		Location delta = a.clone();
 		for(int i=0; i<n; i++) {
 			a.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, delta, 1, 0, 0, 0, 0);

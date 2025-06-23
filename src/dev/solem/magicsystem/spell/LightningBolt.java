@@ -27,16 +27,25 @@ public class LightningBolt extends Spell {
 		player.playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 20, 3);
 		Location location = player.getEyeLocation();
 		this.getParticleAnimation().playAnimation(location, location.getDirection());
-		Location targetLocation = player.getTargetBlock((Set<Material>) null, 20).getLocation();
-		Collection<Entity> entities = location.getWorld().getNearbyEntities(targetLocation, 5, 5, 5);
-		for(Entity entity:entities) {
-			if(player.getEntityId() == entity.getEntityId()) {
-				continue;
+		// hack to raytrace entities
+		for(int ray=0;ray<100;ray+=10) {
+			Location targetLocation = player.getTargetBlock((Set<Material>) null, ray).getLocation();
+			Collection<Entity> entities = location.getWorld().getNearbyEntities(targetLocation, 2, 2, 2);
+			boolean entityHit = false;
+			for(Entity entity:entities) {
+				if(player.getEntityId() == entity.getEntityId()) {
+					continue;
+				}
+				if(entity instanceof LivingEntity) {
+					((LivingEntity) entity).damage(8);
+				}
+				entity.setVelocity(location.getDirection().normalize().multiply(3.0));
+				entityHit = true;
 			}
-			if(entity instanceof LivingEntity) {
-				((LivingEntity) entity).damage(8);
+			if(entityHit) {
+				break;
 			}
-			entity.setVelocity(location.getDirection().normalize().multiply(3.0));
 		}
+		
 	}
 }

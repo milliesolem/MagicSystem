@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -33,10 +34,12 @@ public class SummonCreature extends Spell{
 		this();
 		this.setManaCost(manaCost);
 		this.setDescription(String.format(getDescription(), creature.name()));
-		this.setName("Summon " + creature.name());
+		this.setCreature(creature);
+		this.setName("Summon " +creature.name().substring(0, 1)+ creature.name().substring(1).toLowerCase());
 		this.setCraftingComponent(craftingComponent);
 	}
 	public void cast(Player player) {
+		player.playSound(player.getLocation(), Sound.ENTITY_BLAZE_HURT, 20, 0.3f);
 		Location targetLocation = player.getTargetBlock((Set<Material>) null, 20).getLocation().add(0, 1, 0);
 		this.getParticleAnimation().playAnimation(targetLocation);
 		LivingEntity creatureInstance = (LivingEntity) player.getWorld().spawnEntity(targetLocation, creature);
@@ -44,7 +47,7 @@ public class SummonCreature extends Spell{
 		
 		MagicSystem.getInstance().addMinion(player, creatureInstance);
 	}
-	public void setMob(EntityType creature) {
+	public void setCreature(EntityType creature) {
 		this.creature = creature;
 	}
 	public EntityType getCreature() {

@@ -21,11 +21,13 @@ public class SpellCatalog {
 		spellHashMap.put("TripleFirebolt",  new TripleFirebolt());
 		spellHashMap.put("LightningBolt", new LightningBolt());
 		spellHashMap.put("Thunderbolt", new Thunderbolt());
+		spellHashMap.put("FlameCloak", new FlameCloak());
 		
 		// Restoration
 		spellHashMap.put("LesserWard", new SpellWard("Lesser Ward", 5, Material.IRON_INGOT, 1));
 		spellHashMap.put("SteadfastWard", new SpellWard("Steadfast Ward", 10, Material.SHIELD, 2));
 		spellHashMap.put("GreaterWard", new SpellWard("Greater Ward", 15, Material.IRON_BLOCK, 3));
+		spellHashMap.put("HealingCircle", new HealingCircle());
 		
 		// Alteration
 		spellHashMap.put("Oakflesh", new Oakflesh());

@@ -17,6 +17,7 @@ public class SpectralArrow extends Spell {
 	public void cast(Player player) {
 		player.playSound(player.getLocation(), Sound.ENTITY_ARROW_SHOOT, 20, 1);
 		Arrow arrow = player.getWorld().spawn(player.getEyeLocation(), Arrow.class);
+		arrow.setRotation(player.getEyeLocation().getYaw(), player.getEyeLocation().getPitch());
 		arrow.setVelocity(player.getEyeLocation().getDirection().normalize().multiply(2.0));
 		arrow.setShooter(player);
 	}

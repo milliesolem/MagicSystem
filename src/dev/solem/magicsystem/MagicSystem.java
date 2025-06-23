@@ -20,9 +20,6 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -65,7 +62,14 @@ public class MagicSystem extends JavaPlugin implements Listener {
 		Set<Player> playersWithConjuredMinions  = conjuredMinions.keySet();
 		for(Player player:playersWithConjuredMinions) {
 			Collection<LivingEntity> minions = conjuredMinions.get(player);
+			if(minions == null) {
+				continue;
+			}
 			for(LivingEntity minion:minions) {
+				if(minion == null) {
+					minions.remove(null);
+					continue;
+				}
 				minion.remove();
 			}
 		}
@@ -178,8 +182,11 @@ public class MagicSystem extends JavaPlugin implements Listener {
             			conjuredMinions.get(player).remove(null);
             			continue;
             		}
-            		Mob minionMob = (Mob) minion;
-            		minionMob.setTarget((LivingEntity) targetingEntity);
+            		if(minion instanceof Mob && targetingEntity instanceof LivingEntity) {
+            			Mob minionMob = (Mob) minion;
+                		minionMob.setTarget((LivingEntity) targetingEntity);
+            		}
+            		
             	}
             }
         }
@@ -191,6 +198,10 @@ public class MagicSystem extends JavaPlugin implements Listener {
         if(conjuredMinions.get(player) != null){
         	Collection<LivingEntity> minions = conjuredMinions.get(player);
 			for(LivingEntity minion:minions) {
+				if(minion == null) {
+					minions.remove(null);
+					continue;
+				}
 				minion.remove();
 			}
         }
